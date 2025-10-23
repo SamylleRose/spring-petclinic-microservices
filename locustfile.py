@@ -7,7 +7,7 @@ from faker import Faker
 # Inicializa o Faker para gerar dados em português
 fake = Faker('pt_BR')
 
-# --- Carrega os IDs dos donos do arquivo ---
+
 # Esta parte é executada uma vez quando o Locust inicia
 try:
     with open("owner_ids.txt", "r") as f:
@@ -21,16 +21,13 @@ except FileNotFoundError:
 
 
 class PetClinicUser(HttpUser):
-    """
-    Classe de usuário que simula o comportamento na PetClinic.
-    """
-    # Tempo de espera entre 1 e 3 segundos entre as tarefas
+  
     wait_time = between(1, 3)
     
-    # O host deve ser o endereço do seu API Gateway
+   
     host = "http://localhost:8080"
 
-    # Tarefa 1: Listar todos os donos - Peso 4 (40% de chance de ser escolhida)
+    
     @task(4)
     def list_owners(self):
         self.client.get("/api/customer/owners")
@@ -57,6 +54,6 @@ class PetClinicUser(HttpUser):
             "lastName": fake.last_name(),
             "address": fake.street_address(),
             "city": fake.city(),
-            "telephone": fake.msisdn()[:11] # Garante que o telefone não seja muito longo
+            "telephone": fake.msisdn()[:11] 
         }
         self.client.post("/api/customer/owners", json=new_owner_data)
