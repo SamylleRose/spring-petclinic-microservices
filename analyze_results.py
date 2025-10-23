@@ -1,11 +1,9 @@
-# analyze_results.py (VERSÃO FINAL COM GRÁFICOS AVANÇADOS E DE BARRA INDIVIDUAIS)
-
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# --- Configurações ---
+#Configurações
 results_dir = "results"
 scenarios_config = [
     {"name": "A_leve", "users": 50, "reps": 15, "warmup_sec": 30},
@@ -13,11 +11,11 @@ scenarios_config = [
     {"name": "C_pico", "users": 200, "reps": 15, "warmup_sec": 30}
 ]
 
-# --- Estilo dos gráficos ---
+#Estilo dos gráficos
 sns.set_theme(style="whitegrid")
 plt.rcParams['figure.figsize'] = (12, 7)
 
-# --- DataFrames para armazenar os resultados ---
+#DataFrames para armazenar os resultados 
 summary_data = []
 endpoint_data = []
 latency_distribution_data = []
@@ -94,7 +92,7 @@ for scenario in scenarios_config:
         scenario_endpoints_summary = df_ep_runs.groupby(['Cenário', 'Endpoint']).mean().reset_index()
         endpoint_data.append(scenario_endpoints_summary)
 
-# --- Monta os DataFrames finais ---
+#Monta os DataFrames finais
 df_summary = pd.DataFrame(summary_data).set_index("Cenário")
 df_summary["Sucessos"] = df_summary["Total de Requisições"] - df_summary["Falhas"]
 df_summary["Taxa de Falha (%)"] = (df_summary["Falhas"] / df_summary["Total de Requisições"].replace(0, 1)) * 100
@@ -104,7 +102,7 @@ df_endpoints = pd.DataFrame()
 if endpoint_data:
     df_endpoints = pd.concat(endpoint_data, ignore_index=True)
 
-# --- Exibe as Tabelas de Resumo ---
+#Exibe as Tabelas de Resumo
 print(f"\n--- TABELA DE RESULTADOS GERAIS (MÉDIA DE ATÉ {scenarios_config[0]['reps']} REPETIÇÕES) ---\n")
 print(df_summary[['Usuários', 'Requisições por Segundo', 'Tempo Médio de Resposta (ms)', 'Falhas', 'Taxa de Falha (%)']].to_markdown(floatfmt=".2f"))
 
@@ -112,10 +110,8 @@ if not df_endpoints.empty:
     print(f"\n--- TABELA DE DESEMPENHO POR ENDPOINT (MÉDIA) ---\n")
     print(df_endpoints.pivot_table(index='Endpoint', columns='Cenário', values=['Tempo Médio (ms)', 'Falhas']).to_markdown(floatfmt=".2f"))
 
-# --- Geração dos Gráficos ---
+#Geração dos Gráficos
 print("\nGerando conjunto completo de gráficos...")
-
-# --- GRÁFICOS AVANÇADOS ---
 
 # Gráfico 1: Composição de Sucesso vs. Falha
 plt.figure()
@@ -161,9 +157,6 @@ plt.grid(True, which='both', linestyle='--')
 plt.tight_layout()
 plt.savefig('grafico_avancado_4_escalabilidade_throughput.png')
 plt.close()
-
-
-# --- NOVOS GRÁFICOS DE BARRA INDIVIDUAIS ---
 
 # Gráfico 5: Tempo Médio de Resposta (Barra)
 plt.figure()

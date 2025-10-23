@@ -2,28 +2,28 @@ import requests
 import random
 from faker import Faker
 
-# ==============================================================================
-# --- CONFIGURAÇÕES ---
-# ==============================================================================
+
+# CONFIGURAÇÕES 
+
 
 # Inicializa o Faker para gerar dados em português brasileiro
 fake = Faker('pt_BR')
 
-# --- Constantes da API ---
+# Constantes da API
 BASE_URL = "http://localhost:8080/api"
 OWNERS_URL = f"{BASE_URL}/customer/owners"
 
-# --- Configurações de Geração de Dados ---
+# Configurações de Geração de Dados 
 TOTAL_OWNERS_TO_CREATE = 300
 MAX_PETS_PER_OWNER = 3
 OWNER_IDS_FILE = "owner_ids.txt"
 
-# ==============================================================================
-# --- DEFINIÇÃO DAS FUNÇÕES ---
-# ==============================================================================
+
+# DEFINIÇÃO DAS FUNÇÕES
+
 
 def create_owner():
-    """Cria um novo dono (owner) com dados fictícios."""
+    
     owner_data = {
         "firstName": fake.first_name(),
         "lastName": fake.last_name(),
@@ -43,7 +43,7 @@ def create_owner():
         return None
 
 def add_pet_to_owner(owner_id):
-    """Adiciona um pet a um dono existente."""
+  
     if not owner_id:
         return
         
@@ -60,13 +60,12 @@ def add_pet_to_owner(owner_id):
         response.raise_for_status()
         print(f"  🐾 Pet '{pet_data['name']}' ({pet_type}) adicionado ao dono ID {owner_id}.")
     except requests.exceptions.RequestException as e:
-        # Tenta obter o texto do erro da resposta, se disponível
+     
         error_text = getattr(e.response, 'text', str(e))
         print(f"  ❌ Erro ao adicionar pet ao dono ID {owner_id}: {error_text}")
 
-# ==============================================================================
-# --- BLOCO DE EXECUÇÃO PRINCIPAL ---
-# ==============================================================================
+
+# BLOCO DE EXECUÇÃO PRINCIPAL 
 
 if __name__ == "__main__":
     print("=====================================================")
